@@ -87,6 +87,14 @@ sdatos segment
 	anaWord db 50 dup("$"), "$"
 	flagCount db 0
 	flagYa db 0
+
+	;comando promedio
+	promedio dw 0
+	porcenDip dw 0
+	porcenTrip dw 0
+	porcenHia dw 0
+	porcentaje db "%","$"
+
 	
 
 
@@ -237,6 +245,9 @@ scodigo segment 'CODE'
 				cerrarArchivo handle
 				;mostrando texto del archivo
 				imprimir textFile
+
+				;analizo el contenido del archivo 
+				;numPalabra
 				
 
 
@@ -322,12 +333,97 @@ scodigo segment 'CODE'
 				
 
 			comando_prop: 
+				mov flagCount, 1d
 				imprimir salto
 				imprimir yes
 				imprimir salto
 				imprimir wordprop
 				imprimir salto
+
+				numPalabra
+
+				getWord
+				imprimir nextWord
+				imprimir salto
+
+				veridip nextWord
+				veritrip nextWord
+				verihia nextWord
+				veripal nextWord
+
+				mov al, contarW
+				cmp al, 1d ;diptongo
+				jz countDipd
+
+				cmp al, 2d ;triptongo
+				jz countTripd
+
+				cmp al, 3d ;hiato
+				jz countHiad
+
+				jmp comando_error
+
+				
+				countDipd:
+					;100 * apariciones
+					mov ax, numDip
+					mov bx, 100d
+					mul bx
+					; el resultado se guarda en ax
+					
+					;(100 * apariciones) / total de palabras
+					mov bx, numPal
+					div bx
+					; el resultado se guarda en ax
+
+					call IMPRIMIR_NUMERO 
+					imprimir porcentaje
+					jmp cleanAll
+				
+
+				countTripd:
+					;100 * apariciones
+					mov ax, numTrip
+					mov bx, 100d
+					mul bx
+					; el resultado se guarda en ax
+					
+					;(100 * apariciones) / total de palabras
+					mov bx, numPal
+					div bx
+					; el resultado se guarda en ax
+					
+					call IMPRIMIR_NUMERO 
+					imprimir porcentaje
+					jmp cleanAll
+		
+
+
+				countHiad:
+					;100 * apariciones
+					mov ax, numHia
+					mov bx, 100d
+					mul bx
+					; el resultado se guarda en ax
+					
+					;(100 * apariciones) / total de palabras
+					mov bx, numPal
+					div bx
+					; el resultado se guarda en ax
+					
+					call IMPRIMIR_NUMERO 
+					imprimir porcentaje
+					jmp cleanAll
+
+				
+
 				jmp cleanAll
+
+
+
+
+
+			
 
 			comando_colorear: 
 				imprimir salto
@@ -358,9 +454,6 @@ scodigo segment 'CODE'
 				imprimir salto
 
 				identifyDipto nextWord
-
-
-
 
 				jmp cleanAll
 
@@ -431,12 +524,6 @@ scodigo segment 'CODE'
 				imprimir salto
 				imprimir bye
 				imprimir salto
-
-
-
-
-
-        
 
 
 	ret 

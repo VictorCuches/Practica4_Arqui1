@@ -117,7 +117,7 @@ veriPROP macro
         ; sino son iguales
         jnz diferente
 
-        cmp bl, "$" ;si es igual a dolar
+        cmp bl, "_" ;si es igual a dolar
         jz iguales
         ; si son iguales
         inc di
@@ -126,7 +126,8 @@ veriPROP macro
     iguales:
         ;en esta parte hace las acciones respectivas del comando 
         mov ncomando, 3d
-        
+        inc di
+        mov indiceJ, di
         jmp final
     diferente: 
         ; lo ignora y pasa a la siguiente verificacion
@@ -831,7 +832,7 @@ veripal macro palabra
 endm
 
 numPalabra macro ;textFile
-    local ciclo, ciclo2, ciclo3, ciclo4, finito
+    local ciclo, ciclo2, ciclo3, ciclo4, finito, espacio
     local cicloLimpiar, finLimpiar, chauDip, chauDipd
 
     xor si, si
