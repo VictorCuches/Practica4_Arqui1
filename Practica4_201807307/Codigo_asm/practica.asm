@@ -87,6 +87,7 @@ sdatos segment
 	anaWord db 50 dup("$"), "$"
 	flagCount db 0
 	flagYa db 0
+	dospt db ":","$"
 
 	;comando promedio
 	promedio dw 0
@@ -94,6 +95,7 @@ sdatos segment
 	porcenTrip dw 0
 	porcenHia dw 0
 	porcentaje db "%","$"
+
 
 	
 
@@ -223,14 +225,14 @@ scodigo segment 'CODE'
 			
 
 			comando_abrir:
-				imprimir salto
-				imprimir yes
-				imprimir salto
-				imprimir wordabrir
-				imprimir salto
+				; imprimir salto
+				; imprimir yes
+				; imprimir salto
+				; imprimir wordabrir
+				; imprimir salto
 
 				getRuta ;macro para obtener el nombre de la ruta 
-				imprimir ruta
+				; imprimir ruta
 				imprimir salto
 
 				imprimir msgtxt
@@ -256,17 +258,17 @@ scodigo segment 'CODE'
 			comando_contar: 
 				mov flagCount, 1d
 
-				imprimir salto
-				imprimir yes
-				imprimir salto
-				imprimir wordcontar
-				imprimir salto
+				; imprimir salto
+				; imprimir yes
+				; imprimir salto
+				; imprimir wordcontar
+				; imprimir salto
 
 				numPalabra
 
 				getWord
-				imprimir nextWord
-				imprimir salto
+				; imprimir nextWord
+				; imprimir salto
 
 				veridip nextWord
 				veritrip nextWord
@@ -292,7 +294,8 @@ scodigo segment 'CODE'
 				countDip:
 					imprimir salto
 					imprimir condip
-					imprimir salto
+					imprimir dospt
+					imprimir spc
 					mov ax, numDip
 					call IMPRIMIR_NUMERO 
 					jmp cleanAll
@@ -301,7 +304,8 @@ scodigo segment 'CODE'
 				countTrip:
 					imprimir salto
 					imprimir contrip
-					imprimir salto
+					imprimir dospt
+					imprimir spc
 					mov ax, numTrip
 					call IMPRIMIR_NUMERO 
 					jmp cleanAll
@@ -311,7 +315,8 @@ scodigo segment 'CODE'
 				countHia:
 					imprimir salto
 					imprimir conhia
-					imprimir salto
+					imprimir dospt
+					imprimir spc
 					mov ax, numHia
 					call IMPRIMIR_NUMERO 
 					jmp cleanAll
@@ -319,7 +324,8 @@ scodigo segment 'CODE'
 				countPal:
 					imprimir salto
 					imprimir conpal
-					imprimir salto
+					imprimir dospt
+					imprimir spc
 					mov ax, numPal
 					call IMPRIMIR_NUMERO 
 					jmp cleanAll
@@ -334,17 +340,17 @@ scodigo segment 'CODE'
 
 			comando_prop: 
 				mov flagCount, 1d
-				imprimir salto
-				imprimir yes
-				imprimir salto
-				imprimir wordprop
-				imprimir salto
+				; imprimir salto
+				; imprimir yes
+				; imprimir salto
+				; imprimir wordprop
+				; imprimir salto
 
 				numPalabra
 
 				getWord
-				imprimir nextWord
-				imprimir salto
+				; imprimir nextWord
+				; imprimir salto
 
 				veridip nextWord
 				veritrip nextWord
@@ -365,6 +371,10 @@ scodigo segment 'CODE'
 
 				
 				countDipd:
+					imprimir salto
+					imprimir condip
+					imprimir dospt
+					imprimir spc
 					;100 * apariciones
 					mov ax, numDip
 					mov bx, 100d
@@ -376,12 +386,18 @@ scodigo segment 'CODE'
 					div bx
 					; el resultado se guarda en ax
 
+					
+
 					call IMPRIMIR_NUMERO 
 					imprimir porcentaje
 					jmp cleanAll
 				
 
 				countTripd:
+					imprimir salto
+					imprimir contrip
+					imprimir dospt
+					imprimir spc
 					;100 * apariciones
 					mov ax, numTrip
 					mov bx, 100d
@@ -400,6 +416,10 @@ scodigo segment 'CODE'
 
 
 				countHiad:
+					imprimir salto
+					imprimir conhia
+					imprimir dospt
+					imprimir spc
 					;100 * apariciones
 					mov ax, numHia
 					mov bx, 100d
@@ -410,6 +430,7 @@ scodigo segment 'CODE'
 					mov bx, numPal
 					div bx
 					; el resultado se guarda en ax
+					
 					
 					call IMPRIMIR_NUMERO 
 					imprimir porcentaje
@@ -426,32 +447,37 @@ scodigo segment 'CODE'
 			
 
 			comando_colorear: 
-				imprimir salto
-				imprimir yes
-				imprimir salto
-				imprimir wordcolorear
-				imprimir salto
+				; imprimir salto
+				; imprimir yes
+				; imprimir salto
+				; imprimir wordcolorear
+				; imprimir salto
+
+
+
 				jmp cleanAll
 
 			comando_reporte: 
-				imprimir salto
-				imprimir yes
-				imprimir salto
-				imprimir wordreporte
-				imprimir salto
+				; imprimir salto
+				; imprimir yes
+				; imprimir salto
+				; imprimir wordreporte
+				; imprimir salto
+
+
 				jmp cleanAll
 
 			comando_diptongo: 
 				mov flagCount, 0d
-				imprimir salto
-				imprimir yes
-				imprimir salto
-				imprimir worddipto
-				imprimir salto
+				; imprimir salto
+				; imprimir yes
+				; imprimir salto
+				; imprimir worddipto
+				; imprimir salto
 
 				getWord
-				imprimir nextWord
-				imprimir salto
+				; imprimir nextWord
+				; imprimir salto
 
 				identifyDipto nextWord
 
@@ -459,15 +485,15 @@ scodigo segment 'CODE'
 
 			comando_hiato: 
 				mov flagCount, 0d
-				imprimir salto
-				imprimir yes
-				imprimir salto
-				imprimir wordhiato
-				imprimir salto
+				; imprimir salto
+				; imprimir yes
+				; imprimir salto
+				; imprimir wordhiato
+				; imprimir salto
 
 				getWord
-				imprimir nextWord
-				imprimir salto
+				; imprimir nextWord
+				; imprimir salto
 
 				identifyHiato nextWord
 
@@ -475,15 +501,15 @@ scodigo segment 'CODE'
 
 			comando_triptongo: 
 				mov flagCount, 0d
-				imprimir salto
-				imprimir yes
-				imprimir salto
-				imprimir wordtripto
-				imprimir salto
+				; imprimir salto
+				; imprimir yes
+				; imprimir salto
+				; imprimir wordtripto
+				; imprimir salto
 
 				getWord
-				imprimir nextWord
-				imprimir salto
+				; imprimir nextWord
+				; imprimir salto
 
 				identifyTripto nextWord
 
