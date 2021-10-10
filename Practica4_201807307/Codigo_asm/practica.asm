@@ -507,13 +507,25 @@ scodigo segment 'CODE'
 			
 
 			comando_colorear: 
+				mov flagCount, 0d
 				mov flagColor, 1d
 				imprimir salto
 				imprimir yes
 				imprimir salto
 				imprimir wordcolorear
 				imprimir salto
+
+				mov ah, 00h
+				mov al, 03h
+				int 10h
+
+				mov row, 10d
+				;mov column, 5
+				pintarTexto
+
 				
+				
+
 
 
 
@@ -521,6 +533,7 @@ scodigo segment 'CODE'
 
 			comando_reporte: 
 				mov flagCount, 1d
+				mov flagColor, 0d
 				imprimir salto
 				imprimir wordreporte
 				imprimir spc
@@ -660,6 +673,7 @@ scodigo segment 'CODE'
 
 			comando_diptongo: 
 				mov flagCount, 0d
+				mov flagColor, 0d
 				; imprimir salto
 				; imprimir yes
 				; imprimir salto
@@ -676,6 +690,7 @@ scodigo segment 'CODE'
 
 			comando_hiato: 
 				mov flagCount, 0d
+				mov flagColor, 0d
 				; imprimir salto
 				; imprimir yes
 				; imprimir salto
@@ -692,6 +707,7 @@ scodigo segment 'CODE'
 
 			comando_triptongo: 
 				mov flagCount, 0d
+				mov flagColor, 0d
 				; imprimir salto
 				; imprimir yes
 				; imprimir salto

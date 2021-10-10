@@ -482,6 +482,7 @@ endm
 identifyHiato macro palabra
     local ciclo, ciclo2, ciclo3, ciclo4, ciclo5, finito
     local simple, otroHia
+    
 
     xor si, si
     xor di, di
@@ -507,10 +508,15 @@ identifyHiato macro palabra
         cmp palabra[si], "$"
         jz ciclo4
 
+        
+            
+
+
         inc si
         jmp ciclo
 
     ciclo2:
+      
         inc si
         mov al, palabra[si]
        
@@ -526,6 +532,7 @@ identifyHiato macro palabra
         jmp ciclo
 
     ciclo3:
+      
         inc si
         mov al, palabra[si]
         cmp al, 105 ; i
@@ -533,6 +540,7 @@ identifyHiato macro palabra
         jmp ciclo
 
     ciclo5:
+     
         inc si
         mov al, palabra[si]
 
@@ -554,6 +562,7 @@ identifyHiato macro palabra
         imprimir salto
         jmp finito
     simple:
+       
         mov tipoPalabras, 3d
         cmp flagCount, 1d
         jz otroHia
@@ -838,6 +847,7 @@ veripal macro palabra
           
 endm
 
+; ESTA MACRO ANALIZA EL TEXTO E IDENTIFICA LAS PALABRAS
 numPalabra macro ;textFile
     local ciclo, ciclo2, ciclo3, ciclo4, finito, espacio
     local cicloLimpiar, finLimpiar, chauDip, chauDipd, noIden, noIdend
@@ -1040,4 +1050,62 @@ palReporte macro palabro
     saltoc:
         mov tipoPalabras, 0d
       
+endm
+
+pintarTexto macro 
+    local cicloletra, sig, sig2, sig3, finCmp, noSaltoLinea
+	local rojo, blanco, amarillo, verde
+    mov si, 0
+	cicloletra:
+		;posicionar el cursor
+		mov ah, 2
+		mov dh, row
+		mov dl, column
+		mov bh, 0
+		int 10h
+
+		;imprimir el caracter
+		mov ah, 09h
+		mov al, textFile[si]
+		mov bh, 0
+			cmp al, 'a'
+			jne sig 
+				mov bl, 110b
+				jmp finCmp
+			sig:
+
+			cmp al,'e'
+			jne sig2
+				mov bl, 0100b
+				jmp finCmp
+			sig2:
+
+			cmp al,'i'
+			jne sig3
+				mov bl, 0010b
+				jmp finCmp
+			sig3:
+			mov bl, 1111b
+
+			finCmp:
+
+			mov cx, 1
+			int 10h
+			inc si
+
+			;80 x 25
+			inc column
+			cmp column, 80
+			jl noSaltoLinea
+				
+				inc row 
+				mov column, 0
+
+			noSaltoLinea:
+
+
+			
+			cmp textFile[si], "$"	
+			jne cicloletra
+
 endm
