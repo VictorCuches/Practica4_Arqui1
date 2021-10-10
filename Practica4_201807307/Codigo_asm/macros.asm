@@ -421,7 +421,7 @@ identifyDipto macro palabra ;paisaje
         jmp ciclo ;ciclo
 
     decreciente:
-
+        mov tipoPalabras, 1d
         cmp flagCount, 1d
         jz otroDip
 
@@ -434,6 +434,7 @@ identifyDipto macro palabra ;paisaje
         jmp fini
     
     creciente:
+        mov tipoPalabras, 1d
         cmp flagCount, 1d
         jz otroDip
 
@@ -445,6 +446,7 @@ identifyDipto macro palabra ;paisaje
         jmp fini
     
     homogeneo:
+        mov tipoPalabras, 1d
         cmp flagCount, 1d
         jz otroDip
 
@@ -460,6 +462,7 @@ identifyDipto macro palabra ;paisaje
        inc numDip
        jmp fini
     ciclo5:
+       
         cmp flagCount, 1d
         jz fini
 
@@ -543,6 +546,7 @@ identifyHiato macro palabra
 
         
     ciclo4:
+      
         cmp flagCount, 1d
         jz finito
         imprimir salto 
@@ -550,6 +554,7 @@ identifyHiato macro palabra
         imprimir salto
         jmp finito
     simple:
+        mov tipoPalabras, 3d
         cmp flagCount, 1d
         jz otroHia
 
@@ -615,6 +620,7 @@ identifyTripto macro palabra
         jmp ciclo
 
     triptongo:
+        mov tipoPalabras, 2d
         cmp flagCount, 1d
         jz otroTrip
 
@@ -625,6 +631,7 @@ identifyTripto macro palabra
         jmp finito
 
     ciclo4:
+        
         cmp flagCount, 1d
         jz finito
         imprimir salto
@@ -833,7 +840,8 @@ endm
 
 numPalabra macro ;textFile
     local ciclo, ciclo2, ciclo3, ciclo4, finito, espacio
-    local cicloLimpiar, finLimpiar, chauDip, chauDipd
+    local cicloLimpiar, finLimpiar, chauDip, chauDipd, noIden, noIdend
+    
 
     xor si, si
     xor di, di
@@ -841,8 +849,6 @@ numPalabra macro ;textFile
     ciclo:
         mov al, textFile[si]
 
-        
-    
         cmp al, spc[0]
         jz espacio
 
@@ -882,6 +888,11 @@ numPalabra macro ;textFile
             ;verificar si la palabra hiato
             identifyHiato anaWord
 
+        ; IDENTIFICAR PALABRAS PARA REPORTE 
+        cmp turnIde, 1d
+        jne noIden
+        palReporte anaWord
+        noIden:
 
        
 
@@ -926,6 +937,11 @@ numPalabra macro ;textFile
             ;verificar si la palabra hiato
             identifyHiato anaWord
        
+        ; IDENTIFICAR PALABRAS PARA REPORTE 
+        cmp turnIde, 1d
+        jne noIdend
+        palReporte anaWord
+        noIdend:
         
         ; imprimir salto
         ; imprimir spcDos
@@ -933,4 +949,95 @@ numPalabra macro ;textFile
         ; imprimir anaWord
         ; imprimir salto
     
+endm
+
+openFile macro rutaFile
+    mov ah, 3Dh
+    mov al, 2
+    mov dx, offset rutaFile
+    int 21h
+
+    mov handleR, ax ;manipula archivo
+    
+endm
+
+closeFile macro idFile
+    mov ah, 3Eh
+    mov bx, idFile
+    int 21h
+endm
+
+writeFile macro idFile, numBytes, datos
+    mov ah, 40h
+    mov bx, idFile
+    mov cx, numBytes
+    lea dx, datos ; lo mismo que offset
+    int 21h
+endm
+
+imprimirUno macro cadena
+    local ciclo, final
+
+    xor di, di
+
+    ciclo: 
+        mov bl, cadena[di]
+
+        cmp bl, "$"
+        jz final
+
+        writeFile handleR, 1, cadena[di]
+        inc di
+        
+        jmp ciclo
+
+    final:
+
+
+endm
+
+palReporte macro palabro
+    local saltou, saltod, saltot, saltoc, saltoci
+
+    cmp tipoPalabras, 1d ; diptongo
+    jz saltou
+
+    cmp tipoPalabras, 2d ; triptongo
+    jz saltod
+
+    cmp tipoPalabras, 3d ; hiato
+    jz saltot
+
+    jmp saltoc
+
+    saltou:
+        imprimirUno palabro
+        writeFile handleR, 1, spc
+        writeFile handleR, 1, dospt
+        writeFile handleR, 1, spc
+        writeFile handleR, 8, condip
+        writeFile handleR, 1, salto
+        jmp saltoc
+
+    saltod:
+        imprimirUno palabro
+        writeFile handleR, 1, spc
+        writeFile handleR, 1, dospt
+        writeFile handleR, 1, spc
+        writeFile handleR, 9, contrip
+        writeFile handleR, 1, salto
+        jmp saltoc
+
+    saltot:
+        imprimirUno palabro
+        writeFile handleR, 1, spc
+        writeFile handleR, 1, dospt
+        writeFile handleR, 1, spc
+        writeFile handleR, 5, conhia
+        writeFile handleR, 1, salto
+        jmp saltoc
+
+    saltoc:
+        mov tipoPalabras, 0d
+      
 endm

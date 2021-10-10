@@ -63,14 +63,16 @@ sdatos segment
 	fin db "fin","$"
 
 	;tipo de cada palabra
-	wordDip db "Diptongo ","$"
-	crecien db "- Creciente","$"
-	decrec db "- Decreciente","$"
-	homoge db "- Homogeneo","$"
+	wordDip db "Diptongo","$"
+	crecien db " - Creciente","$"
+	decrec db " - Decreciente","$"
+	homoge db " - Homogeneo","$"
 	noWord db "No es ","$"
 	hiatoS db "Hiato - Simple", "$"
 	noHiato db "No es Hiato","$"
 	tripton db "Triptongo", "$"
+	wordHiator db "Hiato","$"
+	wordPala db "Palabra", "$"
 
 	;comando contar
 	contarW db 0d
@@ -96,7 +98,29 @@ sdatos segment
 	porcenHia dw 0
 	porcentaje db "%","$"
 
+	;colorear
+	row db 0
+	column db 0
+	colorNum db 0
+	flagColor db 0
+	grupito db 10 dup("$"), "$"
+	letrita db " ","$"
 
+	;comando reporte
+	rutaReporte db "reporte.txt",0
+	handleR dw 0 
+	generateR db "generado con exito","$"
+	cantiDip db 0
+	cantiTrip db 0
+	cantiHia db 0
+	wordPr db "--- Proporcion ---", "$"
+	wordCan db "--- Cantidad ---", "$"
+	wordPT db "--- Palabra : Tipo ---","$"
+
+	convertNum db 10 dup("$")
+	tipoPalabras db 0 
+	turnIde db 0
+	
 	
 
 
@@ -148,7 +172,41 @@ scodigo segment 'CODE'
 		pop si
 		pop dx
 		ret
-	IMPRIMIR_NUMERO endp        
+	IMPRIMIR_NUMERO endp     
+
+	CONVERT_NUMERO proc
+		; AX -> parametro donde voy a poner el número a imprimir
+		;local forUno, forDos, finForDos
+		push dx
+		mov cx, "$"
+		push cx
+
+		forUno:
+			xor dx, dx
+			mov bx, 10d
+			div bx 
+			push dx 
+			cmp ax, 10
+			jge forUno
+
+		push ax
+		mov si, offset convertNum
+		forDos:
+			pop dx
+			cmp dl, "$"
+			je finForDos
+			add dl, 30h
+			mov [si], dl
+			inc si
+			jmp forDos
+
+		finForDos:
+
+		pop dx
+		
+		
+		ret
+	CONVERT_NUMERO endp      
 	
 	
 	main proc far 
@@ -161,7 +219,7 @@ scodigo segment 'CODE'
 		mov es,ax 
 
 		repeticion:
-
+			
 			;mostrando encabezado 
 			imprimir header0
 			imprimir header1
@@ -257,6 +315,7 @@ scodigo segment 'CODE'
 
 			comando_contar: 
 				mov flagCount, 1d
+				mov flagColor, 0d ;pendiente
 
 				; imprimir salto
 				; imprimir yes
@@ -340,6 +399,7 @@ scodigo segment 'CODE'
 
 			comando_prop: 
 				mov flagCount, 1d
+				mov flagColor, 0d ;pendiente
 				; imprimir salto
 				; imprimir yes
 				; imprimir salto
@@ -447,22 +507,153 @@ scodigo segment 'CODE'
 			
 
 			comando_colorear: 
-				; imprimir salto
-				; imprimir yes
-				; imprimir salto
-				; imprimir wordcolorear
-				; imprimir salto
+				mov flagColor, 1d
+				imprimir salto
+				imprimir yes
+				imprimir salto
+				imprimir wordcolorear
+				imprimir salto
+				
 
 
 
 				jmp cleanAll
 
 			comando_reporte: 
-				; imprimir salto
-				; imprimir yes
-				; imprimir salto
-				; imprimir wordreporte
-				; imprimir salto
+				mov flagCount, 1d
+				imprimir salto
+				imprimir wordreporte
+				imprimir spc
+				imprimir generateR
+				imprimir salto
+
+				numPalabra ;macro donde analizo el texto
+
+				openFile rutaReporte
+
+			
+				writeFile handleR, 1, salto
+				writeFile handleR, 16, wordCan
+				writeFile handleR, 1, salto
+
+				writeFile handleR, 8, wordDip
+				writeFile handleR, 1, dospt
+				writeFile handleR, 1, spc
+				;escribir numero en el archivo .txt
+				mov ax, numDip
+				call CONVERT_NUMERO
+				imprimirUno convertNum ;como no conozco cuantos bits tiene lo hago uno por uno
+				limpiarEntrada convertNum 
+				xor ax, ax
+				writeFile handleR, 1, salto
+
+				writeFile handleR, 9, tripton
+				writeFile handleR, 1, dospt
+				writeFile handleR, 1, spc
+				;escribir numero en el archivo .txt
+				mov ax, numTrip
+				call CONVERT_NUMERO
+				imprimirUno convertNum ;como no conozco cuantos bits tiene lo hago uno por uno
+				limpiarEntrada convertNum 
+				xor ax, ax
+				writeFile handleR, 1, salto
+
+				writeFile handleR, 5, wordHiator
+				writeFile handleR, 1, dospt
+				writeFile handleR, 1, spc
+				;escribir numero en el archivo .txt
+				mov ax, numHia
+				call CONVERT_NUMERO
+				imprimirUno convertNum ;como no conozco cuantos bits tiene lo hago uno por uno
+				limpiarEntrada convertNum 
+				xor ax, ax
+				writeFile handleR, 1, salto
+
+				writeFile handleR, 7, wordPala
+				writeFile handleR, 1, dospt
+				writeFile handleR, 1, spc
+				;escribir numero en el archivo .txt
+				mov ax, numPal 
+				call CONVERT_NUMERO
+				imprimirUno convertNum ;como no conozco cuantos bits tiene lo hago uno por uno
+				limpiarEntrada convertNum 
+				xor ax, ax
+				writeFile handleR, 1, salto
+
+				; PROPORCIONES
+				writeFile handleR, 1, salto
+				writeFile handleR, 18, wordPr
+				writeFile handleR, 1, salto
+
+				writeFile handleR, 8, wordDip
+				writeFile handleR, 1, dospt
+				writeFile handleR, 1, spc
+
+				;ecuacion para prop
+				;100 * apariciones
+				mov ax, numDip
+				mov bx, 100d
+				mul bx
+				;(100 * apariciones) / total de palabras
+				mov bx, numPal
+				div bx
+				; el resultado se guarda en ax
+				call CONVERT_NUMERO
+				imprimirUno convertNum ;como no conozco cuantos bits tiene lo hago uno por uno
+				limpiarEntrada convertNum 
+				xor ax, ax
+				writeFile handleR, 1, porcentaje
+				writeFile handleR, 1, salto
+
+				writeFile handleR, 9, tripton
+				writeFile handleR, 1, dospt
+				writeFile handleR, 1, spc
+				;ecuacion para prop
+				;100 * apariciones
+				mov ax, numTrip
+				mov bx, 100d
+				mul bx
+				;(100 * apariciones) / total de palabras
+				mov bx, numPal
+				div bx
+				; el resultado se guarda en ax
+				call CONVERT_NUMERO
+				imprimirUno convertNum ;como no conozco cuantos bits tiene lo hago uno por uno
+				limpiarEntrada convertNum 
+				xor ax, ax
+				writeFile handleR, 1, porcentaje
+				writeFile handleR, 1, salto
+
+				writeFile handleR, 5, wordHiator
+				writeFile handleR, 1, dospt
+				writeFile handleR, 1, spc
+				;ecuacion para prop
+				;100 * apariciones
+				mov ax, numHia
+				mov bx, 100d
+				mul bx
+				;(100 * apariciones) / total de palabras
+				mov bx, numPal
+				div bx
+				; el resultado se guarda en ax
+				call CONVERT_NUMERO
+				imprimirUno convertNum ;como no conozco cuantos bits tiene lo hago uno por uno
+				limpiarEntrada convertNum 
+				xor ax, ax
+				writeFile handleR, 1, porcentaje
+				writeFile handleR, 1, salto
+
+				; IMPRIMIENDO IDENTIFICACION DE PALABRAS
+				writeFile handleR, 1, salto
+				writeFile handleR, 22, wordPT
+				writeFile handleR, 1, salto
+				mov turnIde, 1d
+				numPalabra
+				
+
+				closeFile handleR
+
+
 
 
 				jmp cleanAll
