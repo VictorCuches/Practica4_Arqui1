@@ -1,0 +1,44 @@
+
+--- Cantidad ---
+Diptongo: 18
+Triptongo: 09
+Hiato: 04
+Palabra: 89
+
+--- Proporcion ---
+Diptongo: 20%
+Triptongo: 10%
+Hiato: 04%
+
+--- Palabra : Tipo ---
+que : diptongo
+aceitar : diptongo
+miedo : diptongo
+ciais : triptongo
+millonario : diptongo
+aire : diptongo
+gaucho : diptongo
+monstruo : diptongo
+huaico : triptongo
+airoso : diptongo
+gourmet : diptongo
+muelas : diptongo
+hiato : diptongo
+cuando : diptongo
+pronunciacion : diptongo
+aereo : hiato
+cacao : hiato
+teatro : hiato
+leon : hiato
+frecuentes : diptongo
+conjugaciones : diptongo
+abrevieis : triptongo
+fortuito : diptongo
+huaico : triptongo
+acahual : diptongo
+codicieis : triptongo
+fuego : diptongo
+huaico : triptongo
+acaricieis : triptongo
+contagieis : triptongo
+huaura : triptongo

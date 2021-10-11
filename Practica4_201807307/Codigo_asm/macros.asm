@@ -1109,3 +1109,249 @@ pintarTexto macro
 			jne cicloletra
 
 endm
+
+posicionarCursor macro x,y
+	mov ah,02h
+	mov dh,x
+	mov dl,y
+	mov bh,0
+	int 10h
+endm
+
+imprimirVideo macro caracter, color
+	mov ah, 09h
+	mov al, caracter ;al guarda el valor que vamos a escribir
+	mov bh, 0
+	mov bl, color ; valor binario rojo
+	mov cx,1
+	int 10h
+endm
+
+ 
+
+esHiato macro letraU, letraD
+    local ciclo, ciclo2, ciclo3, ciclo4, ciclo5, finito
+    local simple
+    mov yesH, 0
+
+
+    ciclo:
+        mov al, letraU
+     
+        cmp al, 97 ; a
+        jz ciclo2
+
+        cmp al, 101 ; e
+        jz ciclo2
+
+        cmp al, 111 ; o
+        jz ciclo2
+        
+        cmp al, 105 ; i
+        jz ciclo3
+
+        cmp al, 117 ; u
+        jz ciclo5
+
+
+        jmp finito
+
+    ciclo2:
+      
+       
+        mov al, letraD
+       
+        cmp al, 97 ; a
+        jz simple
+
+        cmp al, 101 ; e
+        jz simple
+
+        cmp al, 111 ; o
+        jz simple
+
+       jmp finito
+
+    ciclo3:
+      
+     
+        mov al, letraD
+        cmp al, 105 ; i
+        jz simple
+        jmp finito
+
+    ciclo5:
+     
+        
+        mov al, letraD
+
+
+        cmp al, 117 ; u
+        jz simple
+
+        jmp finito
+
+
+
+        
+     
+    simple:
+       
+        mov yesH, 1
+        jmp finito
+
+     
+    finito:
+
+
+
+endm
+
+esTriptongo macro letraU, letraD, letraT
+    local ciclo, ciclo2, ciclo3, ciclo4, finito, triptongo, otroTrip
+    mov yesT, 0
+    
+    ciclo: 
+        mov al, letraU
+        
+        cmp al, 105 ; i
+        jz ciclo2
+
+        cmp al, 117 ; u
+        jz ciclo2
+
+        
+        jmp finito
+    
+    ciclo2:
+    
+        mov al, letraD
+
+        cmp al, 97 ; a
+        jz ciclo3
+
+        cmp al, 101 ; e
+        jz ciclo3
+
+        cmp al, 111 ; o
+        jz ciclo3
+
+        jmp finito
+    
+    ciclo3:
+       
+        mov al, letraT
+        
+        cmp al, 105 ; i
+        jz triptongo
+
+        cmp al, 117 ; u
+        jz triptongo
+        
+        jmp finito
+
+    triptongo:
+        mov yesT, 1d
+        jmp finito
+
+
+    
+    finito:
+
+
+endm
+
+esDiptongo macro letraU, letraD
+    local ciclo, ciclo2, ciclo3, ciclo4, ciclo5, fini
+    local decreciente, creciente, homogeneo, finPalabra, otroDip
+    mov yesD, 0
+
+    ciclo:
+        mov al, letraU
+        cmp al, 97 ; a
+        jz ciclo2
+
+        cmp al, 101 ; e
+        jz ciclo2
+
+        cmp al, 111 ; o
+        jz ciclo2
+        
+        cmp al, 105 ; i
+        jz ciclo3
+
+        cmp al, 117 ; u
+        jz ciclo4
+
+         
+
+       
+        jmp fini
+
+    ciclo2:
+         
+        mov al, letraD
+        cmp al, 105 ;i
+        jz decreciente
+
+        cmp al, 117;u
+        jz decreciente
+
+        
+        jmp fini
+
+    ciclo3: 
+        mov al, letraD
+        cmp al, 97 ; a
+        jz creciente
+
+        cmp al, 101 ; e
+        jz creciente
+
+        cmp al, 111 ; o
+        jz creciente
+
+        ;diptongo homogeneo
+        cmp al, 117 ;u
+        jz homogeneo
+
+        jmp fini ;ciclo
+    
+    ciclo4:
+        mov al, letraD
+        cmp al, 97 ; a
+        jz creciente
+
+        cmp al, 101 ; e
+        jz creciente
+
+        cmp al, 111 ; o
+        jz creciente
+
+        ;diptongo homogeneo
+        cmp al, 105 ;i
+        jz homogeneo
+
+        jmp fini ;ciclo
+
+    decreciente:
+        mov yesD, 1d
+        jmp fini
+    
+    creciente:
+        mov yesD, 1d
+        jmp fini
+    
+    homogeneo:
+        mov yesD, 1d
+        jmp fini
+
+   
+     
+   
+    fini:
+
+    
+
+
+endm

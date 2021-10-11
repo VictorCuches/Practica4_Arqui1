@@ -105,6 +105,11 @@ sdatos segment
 	flagColor db 0
 	grupito db 10 dup("$"), "$"
 	letrita db " ","$"
+	fila db 0
+	columna db 0
+	yesT db 0
+	yesH db 0
+	yesD db 0
 
 	;comando reporte
 	rutaReporte db "reporte.txt",0
@@ -510,18 +515,130 @@ scodigo segment 'CODE'
 				mov flagCount, 0d
 				mov flagColor, 1d
 				imprimir salto
-				imprimir yes
-				imprimir salto
-				imprimir wordcolorear
+		
 				imprimir salto
 
-				mov ah, 00h
-				mov al, 03h
-				int 10h
+				; mov ah, 00h
+				; mov al, 03h
+				; int 10h
 
-				mov row, 10d
-				;mov column, 5
-				pintarTexto
+				; mov row, 10d
+				; ;mov column, 5
+				; pintarTexto
+				mov ah, 03h
+				mov bh, 00h
+				int 10h ;dh guarda el valor de la ultima posicion fila y dl guarda la ultima posicion de la columna
+
+				mov fila, dh
+				mov columna, dl
+				mov si, 0
+				mov di, 0
+
+				ciclo1c:
+					;posicionar al cursor donde corresponde
+
+					
+
+
+
+
+
+					posicionarCursor fila, columna
+					esTriptongo textFile[si], textFile[si+1], textFile[si+2]
+					cmp yesT, 0
+					je nopintarTrip
+
+					;pintamos el triptongo
+					imprimirVideo textFile[si], 1110b ;imprimos amarillo
+					inc columna ;aumenta la posicion del cursor
+					inc si
+
+					posicionarCursor fila, columna
+
+							
+					imprimirVideo textFile[si], 1110b ;imprimos amarillo
+
+					inc columna ;aumenta la posicion del cursor
+					inc si
+
+					posicionarCursor fila, columna
+
+							
+					imprimirVideo textFile[si], 1110b ;imprimos amarillo
+
+
+					jmp siguiente
+
+					nopintarTrip:
+						esHiato textFile[si], textFile[si+1]
+						cmp yesH, 0
+						je nopintarHIato
+						;pintamos el hiato
+						imprimirVideo textFile[si], 0100b ;imprimos rojo
+						inc columna ;aumenta la posicion del cursor
+						inc si
+
+						posicionarCursor fila, columna
+
+						
+						imprimirVideo textFile[si], 0100b ;imprimos rojo
+						jmp siguiente
+
+
+						nopintarHiato:
+							esDiptongo textFile[si], textFile[si+1]
+					
+
+							cmp yesD,0  
+							je ciclo2c
+
+							
+
+							;pintamos el diptongo
+							imprimirVideo textFile[si], 0010b ;imprimos blanco
+							inc columna ;aumenta la posicion del cursor
+							inc si
+
+							posicionarCursor fila, columna
+
+							
+							imprimirVideo textFile[si], 0010b ;imprimos blanco
+							jmp siguiente
+							
+
+
+
+
+
+							ciclo2c:
+								imprimirVideo textFile[si], 1111b ;imprimos blanco
+								jmp siguiente
+
+
+					siguiente:
+
+					inc columna ;aumenta la posicion del cursor
+					inc si
+
+
+
+					cmp columna, 80d
+					jl noSalto
+						mov columna,0
+						inc fila
+					noSalto:
+
+					cmp textFile[si], 36d 
+					jne ciclo1c
+
+					inc fila
+					mov ah,02h
+					mov dh,fila
+					mov dl,0
+					mov bh,0
+					int 10h
+					
+				cerrar:
 
 				
 				
